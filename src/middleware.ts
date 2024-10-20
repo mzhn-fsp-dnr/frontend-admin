@@ -17,7 +17,9 @@ async function signout(
   authResult: AuthResult | undefined
 ) {
   await logout();
-  const response = NextResponse.redirect(new URL("/signin", request.nextUrl));
+  const response = NextResponse.redirect(
+    new URL("/signin?skip_check=true", request.nextUrl)
+  );
   response.cookies.delete("auth");
   return response;
 }

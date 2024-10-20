@@ -3,10 +3,20 @@
 import SignInForm from "@/components/auth/sign-in-form";
 import * as Alert from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { authStorage } from "@/lib/storage";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export default function Page() {
+  const router = useRouter();
+  const params = useSearchParams();
+
   const [alertOpened, setAlertOpened] = useState(false);
+  const user = authStorage().get();
+
+  if (user !== undefined && params.get("skip_check")) {
+    router.replace("/");
+  }
 
   return (
     <div className="flex flex-col">
