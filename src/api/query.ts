@@ -100,3 +100,17 @@ export async function get_analytics_times(department_id: string) {
     hour: formatTime(item.hour),
   }));
 }
+
+export interface DepartmentTotal {
+  date: string;
+  total_visits: number;
+  pre_reg_visits: number;
+  in_person_visits: number;
+}
+
+export async function get_analytics_total(department_id: string) {
+  const res = (
+    await client.get(`/queue/analytics/department/${department_id}/total`)
+  ).data;
+  return res;
+}
