@@ -8,7 +8,7 @@ import {
   endCurrent,
 } from "@/api/operator";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 // @ts-ignore
 const findServiceById = (services, serviceId) => {
@@ -29,13 +29,14 @@ const useCurrentTicket = () => {
   return useQuery({
     queryKey: ['current_ticket'],
     queryFn: getCurrentTicket,
-    refetchInterval: 2500,
+    refetchInterval: 5000,
   });
 };
 
 export default function OperatorMainPage() {
   const { isLoading, isError, data } = useCurrentTicket();
   const [autoCall, setAutoCall] = useState(false);
+  const queryClient = useQueryClient()
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -49,6 +50,7 @@ export default function OperatorMainPage() {
 
   const callNextUser = async () => {
     const result = await callNext();
+    queryClient.invalidateQueries({ queryKey: ['current_ticket'] })
   };
 
   const cancelUser = async () => {
@@ -57,6 +59,7 @@ export default function OperatorMainPage() {
       if (autoCall) {
         await callNextUser();
       }
+      queryClient.invalidateQueries({ queryKey: ['current_ticket'] })
     }
   };
 
@@ -66,6 +69,7 @@ export default function OperatorMainPage() {
       if (autoCall) {
         await callNextUser();
       }
+      queryClient.invalidateQueries({ queryKey: ['current_ticket'] })
     }
   };
 
