@@ -32,8 +32,6 @@ export async function middleware(request: NextRequest) {
     return await signout(request, authResult);
   }
 
-  console.log("default");
-
   return NextResponse.next();
 
   // if (!authResult)
