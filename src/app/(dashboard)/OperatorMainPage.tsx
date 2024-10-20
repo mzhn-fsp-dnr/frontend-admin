@@ -50,7 +50,7 @@ export default function OperatorMainPage() {
 
     const attemptCallNext = async () => {
       try {
-        await callNextUser(ignore);
+        await callNextUser(true);
       } catch (error) {
         console.error('Error calling next:', error);
       }
