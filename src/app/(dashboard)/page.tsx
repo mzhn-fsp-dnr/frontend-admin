@@ -1,19 +1,13 @@
 "use client";
 
-import withAuth from "@/components/util/with-auth";
-import { me } from "@/service/auth";
-import { useQuery } from "@tanstack/react-query";
+import RoleRequired from "@/components/util/role-required";
+import { ROLES } from "@/constants/roles";
+import OperatorMainPage from "./OperatorMainPage";
 
-function Home() {
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["me"],
-    queryFn: async () => await me(),
-  });
-  console.log('error', data);
-
-  if (isLoading || isError) return <h1>123</h1>;
-
-  return <>{JSON.stringify(data)}</>;
+export default function Home() {
+  return <>
+    <RoleRequired roles={[ROLES.OPERATOR]}>
+      <OperatorMainPage />
+    </RoleRequired> 
+  </>
 }
-
-export default withAuth(Home);
