@@ -27,7 +27,7 @@ import { signIn } from "@/service/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 export default function SignInForm() {
   const form = useForm<z.infer<typeof signInForm>>({
@@ -71,9 +71,9 @@ export default function SignInForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Электронная почта</FormLabel>
+                  <FormLabel>Логин</FormLabel>
                   <FormControl>
-                    <Input placeholder="user@example.com" {...field} />
+                    <Input placeholder="operator" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

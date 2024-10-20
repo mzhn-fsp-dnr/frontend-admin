@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 const orgCreateForm = z.object({
   name: z.string().min(1),
