@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   getCurrentTicket,
   callNext,
@@ -9,6 +9,9 @@ import {
 } from "@/api/operator";
 import { Button } from "@/components/ui/button";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useToast } from '@/hooks/use-toast';
+
+const AUTO_CALL_INTERVAL_MS = 30000;
 
 // @ts-ignore
 const findServiceById = (services, serviceId) => {
@@ -29,7 +32,7 @@ const useCurrentTicket = () => {
   return useQuery({
     queryKey: ['current_ticket'],
     queryFn: getCurrentTicket,
-    refetchInterval: 5000,
+    refetchInterval: 60000,
   });
 };
 
@@ -37,6 +40,35 @@ export default function OperatorMainPage() {
   const { isLoading, isError, data } = useCurrentTicket();
   const [autoCall, setAutoCall] = useState(false);
   const queryClient = useQueryClient()
+
+  const item_index = data ? data['id'] : null;
+
+  const { toast } = useToast();
+
+  useEffect(() => {
+    let timerId = undefined;
+
+    const attemptCallNext = async () => {
+      try {
+        await callNextUser(ignore);
+      } catch (error) {
+        console.error('Error calling next:', error);
+      }
+    };
+
+    if (autoCall && item_index === null) {
+      attemptCallNext();
+      timerId = setInterval(() => {
+        attemptCallNext();
+      }, AUTO_CALL_INTERVAL_MS);
+    }
+
+    return () => {
+      if (timerId) {
+        clearInterval(timerId);
+      }
+    };
+  }, [item_index, autoCall])
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -46,11 +78,21 @@ export default function OperatorMainPage() {
     return <div>Ошибка загрузки данных.</div>;
   }
 
-  const item_index = data ? data['id'] : null;
-
-  const callNextUser = async () => {
+  const callNextUser = async (ignore = false) => {
     const result = await callNext();
-    queryClient.invalidateQueries({ queryKey: ['current_ticket'] })
+
+    if (result?.ticket) {
+      console.log(result.ticket)
+      queryClient.invalidateQueries({ queryKey: ['current_ticket'] })
+    } else {
+      if (!ignore) {
+        console.log('here')
+        toast({
+          variant: "default",
+          description: "Нет клиентов, которых ваше окно может обслужить!",
+        });
+      }
+    }
   };
 
   const cancelUser = async () => {
@@ -117,7 +159,7 @@ export default function OperatorMainPage() {
         <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-8 justify-center">
           <Button
             disabled={item_index != null}
-            onClick={callNextUser}
+            onClick={() => callNextUser()}
             className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded"
           >
             Позвать
