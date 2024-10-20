@@ -1,9 +1,10 @@
 "use client";
 
-import { 
-  getCurrentTicket, 
-  callNext, 
-  cancelCurrent, 
+import React, { useState } from 'react';
+import {
+  getCurrentTicket,
+  callNext,
+  cancelCurrent,
   endCurrent,
 } from "@/api/operator";
 import { Button } from "@/components/ui/button";
@@ -32,36 +33,41 @@ const useCurrentTicket = () => {
   });
 };
 
-
 export default function OperatorMainPage() {
   const { isLoading, isError, data } = useCurrentTicket();
+  const [autoCall, setAutoCall] = useState(false);
 
   if (isLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Ошибка загрузки данных.</div>;
   }
 
   const item_index = data ? data['id'] : null;
 
   const callNextUser = async () => {
     const result = await callNext();
-
-    if (result.ticket != null) {
-    }
   };
 
   const cancelUser = async () => {
     if (item_index) {
       await cancelCurrent(item_index);
+      if (autoCall) {
+        await callNextUser();
+      }
     }
   };
 
   const completeUser = async () => {
     if (item_index) {
       await endCurrent(item_index);
+      if (autoCall) {
+        await callNextUser();
+      }
     }
   };
-
-  
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 sm:p-20 w-full">
@@ -75,14 +81,34 @@ export default function OperatorMainPage() {
           <span className="text-blue-600">{(data === null) ? "отсутствует" : data['service_name']}</span>
         </div>
         <div className="text-2xl sm:text-3xl font-bold pb-4 sm:pb-8 text-center">
-          Тип записи:{" "}
           {
-            (data?.['date_pre_reg']) ? <>
-              <span className="text-blue-600">{data['date_pre_reg']}</span>
-              <br />
-              <span className="text-blue-600">{data['date_reg']}</span>
-            </> : "Обычная регистрация"
+            (data != null) && (
+              <>
+                Тип записи:{" "}
+                {
+                  (data?.['date_pre_reg']) ? <>
+                    <span className="text-blue-600">{data['date_pre_reg']}</span>
+                    <br />
+                    <span className="text-blue-600">{data['date_reg']}</span>
+                  </> : "Обычная регистрация"
+                }
+              </>
+            )
           }
+        </div>
+        <div className="flex items-center justify-center mb-6">
+          <div>
+            <input
+              type="checkbox"
+              id="autoCall"
+              checked={autoCall}
+              onChange={(e) => setAutoCall(e.target.checked)}
+              className="mr-2"
+            />
+            <label htmlFor="autoCall" className="text-lg">
+              Автоматически вызывать следующего посетителя
+            </label>
+          </div>
         </div>
         <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-8 justify-center">
           <Button
