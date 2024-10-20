@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Fish, Home, LogOut, LucideIcon } from "lucide-react";
+import { Building2, Home, LogOut, LucideIcon, Mail } from "lucide-react";
 import Link, { LinkProps } from "next/link";
 import { usePathname } from "next/navigation";
 import { HTMLAttributes } from "react";
@@ -27,8 +27,8 @@ export default function NavSide({ className, ...props }: NavSideProps) {
           href="/"
           className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
         >
-          <Fish className="h-4 w-4 transition-all group-hover:scale-110" />
-          <span className="sr-only">Dolphin</span>
+          <Mail className="h-4 w-4 transition-all group-hover:scale-110" />
+          <span className="sr-only">Mail</span>
         </Link>
 
         <NavSideItem
@@ -36,6 +36,12 @@ export default function NavSide({ className, ...props }: NavSideProps) {
           label="Главная"
           icon={Home}
           active={pathname == "/"}
+        />
+        <NavSideItem
+          href="/orgs"
+          label="Отделения"
+          icon={Building2}
+          active={pathname == "/orgs"}
         />
 
         <div className="mt-auto">
