@@ -6,8 +6,10 @@ import Link, { LinkProps } from "next/link";
 import { usePathname } from "next/navigation";
 import { HTMLAttributes } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import RoleRequired from "../util/role-required";
+import { ROLES } from "@/constants/roles";
 
-export interface NavSideProps extends HTMLAttributes<HTMLDivElement> {}
+export interface NavSideProps extends HTMLAttributes<HTMLDivElement> { }
 
 interface NavSideItemProps extends LinkProps {
   href: string;
@@ -37,12 +39,15 @@ export default function NavSide({ className, ...props }: NavSideProps) {
           icon={Home}
           active={pathname == "/"}
         />
-        <NavSideItem
-          href="/orgs"
-          label="Отделения"
-          icon={Building2}
-          active={pathname == "/orgs"}
-        />
+
+        <RoleRequired roles={[ROLES.ADMIN]}>
+          <NavSideItem
+            href="/orgs"
+            label="Отделения"
+            icon={Building2}
+            active={pathname == "/orgs"}
+          />
+        </RoleRequired>
 
         <div className="mt-auto">
           <NavSideItem

@@ -30,13 +30,13 @@ const tokenRefreshInterceptor = async (error: any) => {
   if (error.response === undefined || error.response.status !== 401)
     return Promise.reject(error);
   if (error.config.headers[skipAuthHeader]) return Promise.reject(error);
-  if (error.config._isRetry) redirect("/sign-in");
+  if (error.config._isRetry) redirect("/signin");
 
   const originalRequest = error.config;
   originalRequest._isRetry = true;
 
   const authData = authStorage().get();
-  if (!authData) redirect("/sign-in");
+  if (!authData) redirect("/signin");
 
   try {
     const refreshedData = await refresh({
@@ -47,7 +47,7 @@ const tokenRefreshInterceptor = async (error: any) => {
 
     return client.request(originalRequest);
   } catch {
-    redirect("/sign-in");
+    redirect("/signin");
   }
 };
 
