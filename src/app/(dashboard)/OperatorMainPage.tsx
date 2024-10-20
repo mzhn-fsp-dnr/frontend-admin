@@ -9,7 +9,8 @@ import {
 } from "@/api/operator";
 import { Button } from "@/components/ui/button";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useToast } from '@/hooks/use-toast';
+import { toast } from "sonner"
+import { Toaster } from "@/components/ui/sonner";
 
 const AUTO_CALL_INTERVAL_MS = 30000;
 
@@ -42,8 +43,6 @@ export default function OperatorMainPage() {
   const queryClient = useQueryClient()
 
   const item_index = data ? data['id'] : null;
-
-  const { toast } = useToast();
 
   useEffect(() => {
     let timerId = undefined;
@@ -87,8 +86,7 @@ export default function OperatorMainPage() {
     } else {
       if (!ignore) {
         console.log('here')
-        toast({
-          variant: "default",
+        toast("Нет клиентов!", {
           description: "Нет клиентов, которых ваше окно может обслужить!",
         });
       }
@@ -152,7 +150,7 @@ export default function OperatorMainPage() {
               className="mr-2"
             />
             <label htmlFor="autoCall" className="text-lg">
-              Автоматически вызывать следующего посетителя
+              Автоматически вызывать следующего клиента
             </label>
           </div>
         </div>
@@ -180,6 +178,7 @@ export default function OperatorMainPage() {
           </Button>
         </div>
       </div>
+      <Toaster position="top-center" />
     </div>
   );
 }
