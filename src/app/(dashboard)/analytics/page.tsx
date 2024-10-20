@@ -1,7 +1,14 @@
 "use client";
 
 import { all, Organization } from "@/api/orgs";
-import { DepartmentDays, get_analytics_department_days } from "@/api/query";
+import {
+  DepartmentDays,
+  DepartmentServices,
+  DepartmentTime,
+  get_analytics_department_days,
+  get_analytics_services,
+  get_analytics_times,
+} from "@/api/query";
 import {
   Dialog,
   DialogContent,
@@ -20,6 +27,8 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { PageHeader, PageTitle } from "../components/ui";
 import { DaysDiagram } from "../orgs/components/daya-diagram";
+import { LinearDiagram } from "../orgs/components/linear-diagram";
+import { ServiceDiagram } from "../orgs/components/service-diagram";
 
 export default function Page() {
   const router = useRouter();
@@ -31,10 +40,20 @@ export default function Page() {
     React.useState<Organization | null>();
 
   const [daysData, setDaysData] = React.useState<DepartmentDays[] | null>(null);
+  const [servicesData, setServicesData] = React.useState<
+    DepartmentServices[] | null
+  >(null);
+  const [timesData, setTimesData] = React.useState<DepartmentTime[] | null>(
+    null
+  );
 
   const refetch = async (e: string) => {
-    const data = await get_analytics_department_days(e);
-    setDaysData(data);
+    const daysData = await get_analytics_department_days(e);
+    setDaysData(daysData);
+    const servicesData = await get_analytics_services(e);
+    setServicesData(servicesData);
+    const timesData = await get_analytics_times(e);
+    setTimesData(timesData);
   };
 
   const [isOpen, setIsOpen] = React.useState(true);
@@ -73,13 +92,17 @@ export default function Page() {
       </Dialog>
       <PageHeader className="flex items-center justify-between">
         {selectedDepartment ? (
-          <PageTitle>Отделение: {selectedDepartment?.name}</PageTitle>
+          <PageTitle>
+            Статистика по отделению: {selectedDepartment?.name}
+          </PageTitle>
         ) : (
           ""
         )}
       </PageHeader>
-      <div className="grid grid-cols-3">
+      <div className="grid grid-cols-3 gap-5">
         {daysData ? <DaysDiagram data={daysData} /> : null}
+        {servicesData ? <ServiceDiagram data={servicesData} /> : null}
+        {timesData ? <LinearDiagram data={timesData} /> : null}
       </div>
     </section>
   );
