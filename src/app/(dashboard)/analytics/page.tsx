@@ -5,9 +5,11 @@ import {
   DepartmentDays,
   DepartmentServices,
   DepartmentTime,
+  DepartmentTotal,
   get_analytics_department_days,
   get_analytics_services,
   get_analytics_times,
+  get_analytics_total,
 } from "@/api/query";
 import {
   Dialog,
@@ -29,6 +31,7 @@ import { PageHeader, PageTitle } from "../components/ui";
 import { DaysDiagram } from "../orgs/components/daya-diagram";
 import { LinearDiagram } from "../orgs/components/linear-diagram";
 import { ServiceDiagram } from "../orgs/components/service-diagram";
+import { Component } from "../orgs/components/totalbar-diagram";
 
 export default function Page() {
   const router = useRouter();
@@ -46,6 +49,9 @@ export default function Page() {
   const [timesData, setTimesData] = React.useState<DepartmentTime[] | null>(
     null
   );
+  const [totalData, setTotalData] = React.useState<DepartmentTotal[] | null>(
+    null
+  );
 
   const refetch = async (e: string) => {
     const daysData = await get_analytics_department_days(e);
@@ -54,6 +60,8 @@ export default function Page() {
     setServicesData(servicesData);
     const timesData = await get_analytics_times(e);
     setTimesData(timesData);
+    const totalData = await get_analytics_total(e);
+    setTotalData(totalData);
   };
 
   const [isOpen, setIsOpen] = React.useState(true);
@@ -92,9 +100,7 @@ export default function Page() {
       </Dialog>
       <PageHeader className="flex items-center justify-between">
         {selectedDepartment ? (
-          <PageTitle>
-            Статистика по отделению: {selectedDepartment?.name}
-          </PageTitle>
+          <PageTitle>Отделение: {selectedDepartment?.name}</PageTitle>
         ) : (
           ""
         )}
@@ -103,6 +109,11 @@ export default function Page() {
         {daysData ? <DaysDiagram data={daysData} /> : null}
         {servicesData ? <ServiceDiagram data={servicesData} /> : null}
         {timesData ? <LinearDiagram data={timesData} /> : null}
+        {totalData ? (
+          <div className="col-span-3">
+            <Component data={totalData} />
+          </div>
+        ) : null}
       </div>
     </section>
   );

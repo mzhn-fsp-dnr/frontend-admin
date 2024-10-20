@@ -1,7 +1,13 @@
 "use client";
 
 import { DepartmentServices } from "@/api/query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -30,8 +36,11 @@ export function ServiceDiagram({ data }: Props) {
   console.log(data[0]);
   return (
     <Card className="flex flex-col">
-      <CardHeader className="mx-10 items-center">
-        <CardTitle>Распределение клиентов по разным типам услуг (%)</CardTitle>
+      <CardHeader className="mx-10">
+        <CardTitle>Распределение талонов по разным услугам (%)</CardTitle>
+        <CardDescription>
+          Распределение выражается в процентах от общего количества талонов
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
