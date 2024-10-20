@@ -1,15 +1,22 @@
 "use client";
 
+import { ROLES } from "@/constants/roles";
 import { cn } from "@/lib/utils";
-import { Building2, Home, LogOut, LucideIcon, Mail } from "lucide-react";
+import {
+  Building2,
+  ChartLine,
+  Home,
+  LogOut,
+  LucideIcon,
+  Mail,
+} from "lucide-react";
 import Link, { LinkProps } from "next/link";
 import { usePathname } from "next/navigation";
 import { HTMLAttributes } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import RoleRequired from "../util/role-required";
-import { ROLES } from "@/constants/roles";
 
-export interface NavSideProps extends HTMLAttributes<HTMLDivElement> { }
+export interface NavSideProps extends HTMLAttributes<HTMLDivElement> {}
 
 interface NavSideItemProps extends LinkProps {
   href: string;
@@ -46,6 +53,12 @@ export default function NavSide({ className, ...props }: NavSideProps) {
             label="Отделения"
             icon={Building2}
             active={pathname == "/orgs"}
+          />
+          <NavSideItem
+            href="/analytics"
+            label="Статистика"
+            icon={ChartLine}
+            active={pathname == "/analytics"}
           />
         </RoleRequired>
 
