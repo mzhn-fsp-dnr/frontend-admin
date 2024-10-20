@@ -12,7 +12,6 @@ export default function Layout({
       <footer className="mt-auto w-full p-2 text-center text-sm opacity-30">
         © 2024 mzhn-team
       </footer>
-      ;
     </div>
   );
 }
